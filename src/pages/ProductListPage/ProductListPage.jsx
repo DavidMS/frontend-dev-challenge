@@ -11,10 +11,19 @@ function ProductListPage() {
     const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
-        getProducts()
+        const controller = new AbortController();
+
+        getProducts({ signal: controller.signal })
             .then(setProducts)
-            .catch(() => setLoadingError('Error al cargar los productos'))
-            .finally(() => setLoading(false));
+            .catch((err) => {
+                if (err.name === 'AbortError') return;
+                setLoadingError('Error al cargar los productos');
+            })
+            .finally(() => {
+                if (!controller.signal.aborted) setLoading(false);
+            });
+
+        return () => controller.abort();
     }, []);
 
     const filteredProducts = products.filter(

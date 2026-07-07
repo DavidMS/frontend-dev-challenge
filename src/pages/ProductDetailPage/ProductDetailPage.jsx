@@ -14,23 +14,36 @@ function ProductDetailPage() {
     const [selectedColor, setSelectedColor] = useState(null);
     const [selectedStorage, setSelectedStorage] = useState(null);
     const [adding, setAdding] = useState(false);
+    const [addError, setAddError] = useState(null);
 
     useEffect(() => {
+        const controller = new AbortController();
         setLoading(true);
-        getProduct(id)
+        setError(null);
+
+        getProduct(id, { signal: controller.signal })
             .then((data) => {
                 setProduct(data);
                 setSelectedColor(data.options.colors[0]?.code ?? null);
                 setSelectedStorage(data.options.storages[0]?.code ?? null);
             })
-            .catch(() => setError('Error al cargar el producto'))
-            .finally(() => setLoading(false))
+            .catch((err) => {
+                if (err.name === 'AbortError') return;
+                setError('Error al cargar el producto');
+            })
+            .finally(() => {
+                if (!controller.signal.aborted) setLoading(false);
+            })
+
+        return () => controller.abort();
     }, [id])
 
     const handleAddToCart = () => {
         setAdding(true);
+        setAddError(null);
         addToCart({ id, colorCode: selectedColor, storageCode: selectedStorage })
             .then(() => updateCartCount(cartCount + 1))
+            .catch(() => setAddError('No se pudo añadir el producto al carrito'))
             .finally(() => setAdding(false))
     }
 
@@ -110,6 +123,7 @@ function ProductDetailPage() {
                         >
                             {adding ? 'Añadiendo...' : 'Añadir al carrito'}
                         </button>
+                        {addError && <p className="status-message">{addError}</p>}
                     </div>
                 </div>
             </div>
