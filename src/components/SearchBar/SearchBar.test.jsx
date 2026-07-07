@@ -15,4 +15,9 @@ describe('SearchBar', () => {
         await userEvent.type(screen.getByRole('searchbox'), 'apple')
         expect(onChange).toHaveBeenCalled()
     })
+
+    it('has an accessible label for screen readers', () => {
+        render(<SearchBar value="" onChange={() => {}} />)
+        expect(screen.getByLabelText('Buscar por marca o modelo')).toBeInTheDocument()
+    })
 })

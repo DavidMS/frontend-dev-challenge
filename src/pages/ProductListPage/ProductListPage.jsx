@@ -56,6 +56,7 @@ function ProductListPage() {
 
     return (
         <div className="product-list-page">
+            <h1 className="sr-only">Catálogo de móviles</h1>
             <div className="product-list-page__toolbar">
                 <span>{filteredProducts.length} resultados</span>
                 <SearchBar value={searchTerm} onChange={setSearchTerm} />

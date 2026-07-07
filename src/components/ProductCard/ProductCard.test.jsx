@@ -30,4 +30,14 @@ describe('ProductCard', () => {
         )
         expect(screen.getByText('Precio no disponible')).toBeInTheDocument()
     })
+
+    it('is a keyboard-navigable link to the product detail page', () => {
+        render(
+            <MemoryRouter>
+                <ProductCard product={product} />
+            </MemoryRouter>
+        )
+        const link = screen.getByRole('link')
+        expect(link).toHaveAttribute('href', '/product/1')
+    })
 })

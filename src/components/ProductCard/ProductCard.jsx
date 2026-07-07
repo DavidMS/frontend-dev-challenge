@@ -1,11 +1,9 @@
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import './ProductCard.css';
 
 function ProductCard({product}) {
-    const navigate = useNavigate();
-
     return (
-        <article className="product-card" onClick={() => navigate(`/product/${product.id}`)}>
+        <Link to={`/product/${product.id}`} className="product-card">
             <img
             src={product.imgUrl}
             alt={`${product.brand} ${product.model}`}
@@ -18,7 +16,7 @@ function ProductCard({product}) {
                     {product.price ? `${product.price} €` : 'Precio no disponible'}
                 </span>
             </div>
-        </article>
+        </Link>
     )
 }
 
