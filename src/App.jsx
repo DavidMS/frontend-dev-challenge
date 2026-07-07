@@ -1,9 +1,8 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import {CartProvider} from "./context/CartContext.jsx";
-import Header from "./components/Header/Header.jsx";
-import ProductListPage from "./pages/ProductListPage/ProductListPage.jsx";
-import ProductDetailPage from "./pages/ProductDetailPage/ProductDetailPage.jsx";
-
+import { CartProvider } from './context/CartContext.jsx';
+import Header from './components/Header/Header.jsx';
+import ProductListPage from './pages/ProductListPage/ProductListPage.jsx';
+import ProductDetailPage from './pages/ProductDetailPage/ProductDetailPage.jsx';
 
 function App() {
     return (
@@ -18,7 +17,7 @@ function App() {
                 </main>
             </CartProvider>
         </BrowserRouter>
-    )
+    );
 }
 
 export default App;

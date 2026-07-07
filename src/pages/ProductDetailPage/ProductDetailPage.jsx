@@ -1,8 +1,8 @@
 import './ProductDetailPage.css';
-import {useParams, Link} from "react-router-dom";
-import {useCart} from "../../context/CartContext.jsx";
-import {useEffect, useState} from "react";
-import {addToCart, getProduct} from "../../services/api.js";
+import { useParams, Link } from 'react-router-dom';
+import { useCart } from '../../context/CartContext.jsx';
+import { useEffect, useState } from 'react';
+import { addToCart, getProduct } from '../../services/api.js';
 
 function ProductDetailPage() {
     const { id } = useParams();
@@ -20,6 +20,7 @@ function ProductDetailPage() {
 
     useEffect(() => {
         const controller = new AbortController();
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- resets loading state on id/retry changes, required to show the spinner again on retry
         setLoading(true);
         setError(null);
 
@@ -35,10 +36,10 @@ function ProductDetailPage() {
             })
             .finally(() => {
                 if (!controller.signal.aborted) setLoading(false);
-            })
+            });
 
         return () => controller.abort();
-    }, [id, retryCount])
+    }, [id, retryCount]);
 
     const handleAddToCart = () => {
         setAdding(true);
@@ -50,20 +51,23 @@ function ProductDetailPage() {
                 setAddSuccess(true);
             })
             .catch(() => setAddError('No se pudo añadir el producto al carrito'))
-            .finally(() => setAdding(false))
-    }
+            .finally(() => setAdding(false));
+    };
 
-    if (loading) return <p className="status-message">Cargando producto...</p>
-    if (error) return (
-        <div className="status-message" role="alert">
-            <p>{error}</p>
-            <button onClick={() => setRetryCount((count) => count + 1)}>Reintentar</button>
-        </div>
-    );
+    if (loading) return <p className="status-message">Cargando producto...</p>;
+    if (error)
+        return (
+            <div className="status-message" role="alert">
+                <p>{error}</p>
+                <button onClick={() => setRetryCount((count) => count + 1)}>Reintentar</button>
+            </div>
+        );
 
     return (
         <div className="product-detail-page">
-            <Link to="/" className="back-link">← Volver al listado</Link>
+            <Link to="/" className="back-link">
+                ← Volver al listado
+            </Link>
 
             <div className="product-detail-page__content">
                 <div className="product-detail-page__image">
@@ -72,7 +76,9 @@ function ProductDetailPage() {
 
                 <div>
                     <div className="description">
-                        <h1>{product.brand} {product.model}</h1>
+                        <h1>
+                            {product.brand} {product.model}
+                        </h1>
                         <dl>
                             <dt>Precio</dt>
                             <dd>{product.price ? `${product.price} €` : 'No disponible'}</dd>
@@ -102,9 +108,9 @@ function ProductDetailPage() {
                             <div>
                                 <label htmlFor="color-select">Color</label>
                                 <select
-                                id="color-select"
-                                value={selectedColor ?? ''}
-                                onChange={(e) => setSelectedColor(Number(e.target.value))}
+                                    id="color-select"
+                                    value={selectedColor ?? ''}
+                                    onChange={(e) => setSelectedColor(Number(e.target.value))}
                                 >
                                     {product.options.colors.map((color) => (
                                         <option key={color.code} value={color.code}>
@@ -116,9 +122,10 @@ function ProductDetailPage() {
                             <div>
                                 <label htmlFor="storage-select">Almacenamiento</label>
                                 <select
-                                id="storage-select"
-                                value={selectedStorage ?? ''}
-                                onChange={(e) => setSelectedStorage(e.target.value)}>
+                                    id="storage-select"
+                                    value={selectedStorage ?? ''}
+                                    onChange={(e) => setSelectedStorage(e.target.value)}
+                                >
                                     {product.options.storages.map((storage) => (
                                         <option key={storage.code} value={storage.code}>
                                             {storage.name}
@@ -128,13 +135,17 @@ function ProductDetailPage() {
                             </div>
                         </div>
                         <button
-                        className="actions__add-button"
-                        onClick={handleAddToCart}
-                        disabled={adding || !selectedColor || !selectedStorage}
+                            className="actions__add-button"
+                            onClick={handleAddToCart}
+                            disabled={adding || !selectedColor || !selectedStorage}
                         >
                             {adding ? 'Añadiendo...' : 'Añadir al carrito'}
                         </button>
-                        {addError && <p className="status-message" role="alert">{addError}</p>}
+                        {addError && (
+                            <p className="status-message" role="alert">
+                                {addError}
+                            </p>
+                        )}
                         {addSuccess && (
                             <p className="status-message status-message--success" role="status">
                                 Producto añadido al carrito
@@ -144,8 +155,7 @@ function ProductDetailPage() {
                 </div>
             </div>
         </div>
-    )
-
+    );
 }
 
 export default ProductDetailPage;

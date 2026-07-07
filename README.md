@@ -10,16 +10,26 @@ Mini aplicación para la compra de dispositivos móviles, desarrollada como prue
 
 ```bash
 npm install
+cp .env.example .env
 ```
+
+## Variables de entorno
+
+| Variable            | Descripción                     |
+| ------------------- | ------------------------------- |
+| `VITE_API_BASE_URL` | URL base de la API de productos |
 
 ## Scripts
 
-| Comando | Descripción |
-|---|---|
-| `npm start` | Inicia el servidor de desarrollo |
-| `npm run build` | Genera la build de producción |
-| `npm test` | Ejecuta los tests |
-| `npm run lint` | Comprueba el código con ESLint |
+| Comando                 | Descripción                        |
+| ----------------------- | ---------------------------------- |
+| `npm start`             | Inicia el servidor de desarrollo   |
+| `npm run build`         | Genera la build de producción      |
+| `npm test`              | Ejecuta los tests                  |
+| `npm run test:coverage` | Ejecuta los tests con cobertura    |
+| `npm run lint`          | Comprueba el código con ESLint     |
+| `npm run format`        | Formatea el código con Prettier    |
+| `npm run format:check`  | Comprueba el formato sin modificar |
 
 ## Tecnologías utilizadas
 
@@ -48,8 +58,8 @@ El número de productos añadidos al carrito se persiste en `localStorage`, por 
 
 Base URL: `https://itx-frontend-test.onrender.com/`
 
-| Método | Endpoint | Descripción |
-|---|---|---|
-| GET | `/api/product` | Listado de productos |
-| GET | `/api/product/:id` | Detalle de un producto |
-| POST | `/api/cart` | Añadir producto al carrito |
+| Método | Endpoint           | Descripción                |
+| ------ | ------------------ | -------------------------- |
+| GET    | `/api/product`     | Listado de productos       |
+| GET    | `/api/product/:id` | Detalle de un producto     |
+| POST   | `/api/cart`        | Añadir producto al carrito |

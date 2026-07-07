@@ -1,6 +1,6 @@
-import {getCache, setCache} from "./cache.js";
+import { getCache, setCache } from './cache.js';
 
-const BASE_URL = 'https://itx-frontend-test.onrender.com'
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export class ApiError extends Error {
     constructor(message, { status, cause } = {}) {
@@ -21,7 +21,9 @@ async function request(url, options) {
     }
 
     if (!response.ok) {
-        throw new ApiError(`El servidor respondió con un error (${response.status})`, { status: response.status });
+        throw new ApiError(`El servidor respondió con un error (${response.status})`, {
+            status: response.status,
+        });
     }
 
     if (response.status === 204) return null;
@@ -29,13 +31,16 @@ async function request(url, options) {
     try {
         return await response.json();
     } catch (error) {
-        throw new ApiError('La respuesta del servidor no es válida', { status: response.status, cause: error });
+        throw new ApiError('La respuesta del servidor no es válida', {
+            status: response.status,
+            cause: error,
+        });
     }
 }
 
 export async function getProducts({ signal } = {}) {
     const cached = getCache('products');
-    if(cached) return cached;
+    if (cached) return cached;
 
     const data = await request(`${BASE_URL}/api/product`, { signal });
     setCache('products', data);
@@ -45,18 +50,18 @@ export async function getProducts({ signal } = {}) {
 export async function getProduct(id, { signal } = {}) {
     const cacheKey = `product-${id}`;
     const cached = getCache(cacheKey);
-    if(cached) return cached;
+    if (cached) return cached;
 
     const data = await request(`${BASE_URL}/api/product/${id}`, { signal });
     setCache(cacheKey, data);
     return data;
 }
 
-export async function addToCart({id, colorCode, storageCode}, { signal } = {}) {
+export async function addToCart({ id, colorCode, storageCode }, { signal } = {}) {
     return request(`${BASE_URL}/api/cart`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({id, colorCode, storageCode}),
+        body: JSON.stringify({ id, colorCode, storageCode }),
         signal,
     });
 }

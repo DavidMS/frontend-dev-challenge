@@ -1,21 +1,36 @@
-import js from '@eslint/js'
-import globals from 'globals'
-import reactHooks from 'eslint-plugin-react-hooks'
-import reactRefresh from 'eslint-plugin-react-refresh'
-import { defineConfig, globalIgnores } from 'eslint/config'
+import js from '@eslint/js';
+import globals from 'globals';
+import reactHooks from 'eslint-plugin-react-hooks';
+import reactRefresh from 'eslint-plugin-react-refresh';
+import jsxA11y from 'eslint-plugin-jsx-a11y';
+import testingLibrary from 'eslint-plugin-testing-library';
+import prettierConfig from 'eslint-config-prettier';
+import { defineConfig, globalIgnores } from 'eslint/config';
 
 export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{js,jsx}'],
-    extends: [
-      js.configs.recommended,
-      reactHooks.configs.flat.recommended,
-      reactRefresh.configs.vite,
-    ],
-    languageOptions: {
-      globals: globals.browser,
-      parserOptions: { ecmaFeatures: { jsx: true } },
+    globalIgnores(['dist']),
+    {
+        files: ['**/*.{js,jsx}'],
+        extends: [
+            js.configs.recommended,
+            reactHooks.configs.flat.recommended,
+            reactRefresh.configs.vite,
+        ],
+        plugins: { 'jsx-a11y': jsxA11y },
+        languageOptions: {
+            globals: globals.browser,
+            parserOptions: { ecmaFeatures: { jsx: true } },
+        },
+        rules: {
+            ...jsxA11y.configs.recommended.rules,
+        },
     },
-  },
-])
+    {
+        files: ['**/*.test.{js,jsx}', 'src/setupTests.js'],
+        extends: [testingLibrary.configs['flat/react']],
+        languageOptions: {
+            globals: { ...globals.browser, ...globals.vitest },
+        },
+    },
+    prettierConfig,
+]);

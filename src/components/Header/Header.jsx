@@ -1,6 +1,6 @@
-import { Link, useLocation } from "react-router-dom";
-import { useCart } from "../../context/CartContext.jsx";
-import "./Header.css";
+import { Link, useLocation } from 'react-router-dom';
+import { useCart } from '../../context/CartContext.jsx';
+import './Header.css';
 
 function Header() {
     const { cartCount } = useCart();
@@ -9,7 +9,9 @@ function Header() {
 
     return (
         <header className="header">
-            <Link to="/" className="header__logo">Mobile Shop</Link>
+            <Link to="/" className="header__logo">
+                Mobile Shop
+            </Link>
             <nav className="header__breadcrumb">
                 {isHome ? (
                     <span>Inicio</span>
@@ -24,7 +26,7 @@ function Header() {
                 <span className="header__cart-badge">{cartCount}</span>
             </div>
         </header>
-    )
+    );
 }
 
 export default Header;

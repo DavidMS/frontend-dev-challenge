@@ -1,10 +1,10 @@
-import {useEffect, useState} from "react";
-import {useSearchParams} from "react-router-dom";
-import {getProducts} from "../../services/api.js";
-import {normalizeText} from "../../utils/normalizeText.js";
-import {useDebouncedValue} from "../../hooks/useDebouncedValue.js";
-import SearchBar from "../../components/SearchBar/SearchBar.jsx";
-import ProductCard from "../../components/ProductCard/ProductCard.jsx";
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { getProducts } from '../../services/api.js';
+import { normalizeText } from '../../utils/normalizeText.js';
+import { useDebouncedValue } from '../../hooks/useDebouncedValue.js';
+import SearchBar from '../../components/SearchBar/SearchBar.jsx';
+import ProductCard from '../../components/ProductCard/ProductCard.jsx';
 import './ProductListPage.css';
 
 function ProductListPage() {
@@ -19,6 +19,7 @@ function ProductListPage() {
 
     useEffect(() => {
         const controller = new AbortController();
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- resets loading state on id/retry changes, required to show the spinner again on retry
         setLoading(true);
         setLoadingError(false);
 
@@ -42,17 +43,19 @@ function ProductListPage() {
 
     const normalizedSearchTerm = normalizeText(debouncedSearchTerm);
     const filteredProducts = products.filter(
-        (product) => normalizeText(product.brand).includes(normalizedSearchTerm) ||
+        (product) =>
+            normalizeText(product.brand).includes(normalizedSearchTerm) ||
             normalizeText(product.model).includes(normalizedSearchTerm)
-    )
-
-    if(loading) return <p className="status-message">Cargando productos...</p>
-    if(loadingError) return (
-        <div className="status-message" role="alert">
-            <p>{loadingError}</p>
-            <button onClick={() => setRetryCount((count) => count + 1)}>Reintentar</button>
-        </div>
     );
+
+    if (loading) return <p className="status-message">Cargando productos...</p>;
+    if (loadingError)
+        return (
+            <div className="status-message" role="alert">
+                <p>{loadingError}</p>
+                <button onClick={() => setRetryCount((count) => count + 1)}>Reintentar</button>
+            </div>
+        );
 
     return (
         <div className="product-list-page">
@@ -71,7 +74,7 @@ function ProductListPage() {
                 </div>
             )}
         </div>
-    )
+    );
 }
 
 export default ProductListPage;
