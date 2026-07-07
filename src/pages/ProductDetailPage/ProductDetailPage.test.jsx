@@ -66,6 +66,20 @@ describe('ProductDetailPage', () => {
         })
     })
 
+    it('retries loading the product when the retry button is clicked', async () => {
+        vi.spyOn(api, 'getProduct').mockRejectedValueOnce(new Error('network error'))
+        renderPage()
+        await waitFor(() => {
+            expect(screen.getByText('Error al cargar el producto')).toBeInTheDocument()
+        })
+
+        await userEvent.click(screen.getByRole('button', { name: 'Reintentar' }))
+
+        await waitFor(() => {
+            expect(screen.getByRole('heading', { name: 'Apple iPhone 15' })).toBeInTheDocument()
+        })
+    })
+
     it('lets the user change the selected color and storage', async () => {
         renderPage()
         await waitFor(() => screen.getByRole('heading', { name: 'Apple iPhone 15' }))
@@ -88,6 +102,9 @@ describe('ProductDetailPage', () => {
             expect(api.addToCart).toHaveBeenCalledWith({ id: '1', colorCode: 1000, storageCode: 2000 })
         })
         expect(localStorage.getItem('cartCount')).toBe('1')
+        await waitFor(() => {
+            expect(screen.getByText('Producto añadido al carrito')).toBeInTheDocument()
+        })
     })
 
     it('shows an error message when adding to the cart fails', async () => {

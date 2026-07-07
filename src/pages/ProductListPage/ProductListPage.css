@@ -37,3 +37,9 @@
     padding: 24px;
     text-align: center;
 }
+
+.status-message button {
+    margin-top: 12px;
+    padding: 8px 20px;
+    cursor: pointer;
+}

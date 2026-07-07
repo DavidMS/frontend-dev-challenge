@@ -15,6 +15,8 @@ function ProductDetailPage() {
     const [selectedStorage, setSelectedStorage] = useState(null);
     const [adding, setAdding] = useState(false);
     const [addError, setAddError] = useState(null);
+    const [addSuccess, setAddSuccess] = useState(false);
+    const [retryCount, setRetryCount] = useState(0);
 
     useEffect(() => {
         const controller = new AbortController();
@@ -36,19 +38,28 @@ function ProductDetailPage() {
             })
 
         return () => controller.abort();
-    }, [id])
+    }, [id, retryCount])
 
     const handleAddToCart = () => {
         setAdding(true);
         setAddError(null);
+        setAddSuccess(false);
         addToCart({ id, colorCode: selectedColor, storageCode: selectedStorage })
-            .then(() => updateCartCount(cartCount + 1))
+            .then(() => {
+                updateCartCount(cartCount + 1);
+                setAddSuccess(true);
+            })
             .catch(() => setAddError('No se pudo añadir el producto al carrito'))
             .finally(() => setAdding(false))
     }
 
     if (loading) return <p className="status-message">Cargando producto...</p>
-    if (error) return <p className="status-message">{error}</p>;
+    if (error) return (
+        <div className="status-message" role="alert">
+            <p>{error}</p>
+            <button onClick={() => setRetryCount((count) => count + 1)}>Reintentar</button>
+        </div>
+    );
 
     return (
         <div className="product-detail-page">
@@ -123,7 +134,12 @@ function ProductDetailPage() {
                         >
                             {adding ? 'Añadiendo...' : 'Añadir al carrito'}
                         </button>
-                        {addError && <p className="status-message">{addError}</p>}
+                        {addError && <p className="status-message" role="alert">{addError}</p>}
+                        {addSuccess && (
+                            <p className="status-message status-message--success" role="status">
+                                Producto añadido al carrito
+                            </p>
+                        )}
                     </div>
                 </div>
             </div>

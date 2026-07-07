@@ -90,6 +90,11 @@
     cursor: not-allowed;
 }
 
+.status-message--success {
+    margin-top: 12px;
+    color: #1a7f37;
+}
+
 @media (max-width: 768px) {
     .product-detail-page__content {
         grid-template-columns: 1fr;
